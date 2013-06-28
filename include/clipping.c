@@ -24,16 +24,13 @@ int comp_dis(const void *a,const void *b)
 
 void clipping(struct poly *window,struct poly *pol)
 {
-	drawpolygon(pol,yellow);
-	drawpolygon(window,red);
-//	return ;
 	struct poly win,clip,tpol;
 	struct storp inter[MAX_INTERSECTION],newwin[MAX_VERTEX][MAX_INTERSECTION];
 	
 	int flag_win[MAX_INTERSECTION],flag_pol[MAX_INTERSECTION],num[MAX_INTERSECTION];
-	memset(flag_win,0,MAX_INTERSECTION);
-	memset(flag_pol,0,MAX_INTERSECTION);
-	memset(num,0,MAX_INTERSECTION);
+	memset(flag_win,0,sizeof(flag_win));
+	memset(flag_pol,0,sizeof(flag_pol));
+	memset(num,0,sizeof(num));
 	int flag;
 	int i,j,k = 0, x;
 	
@@ -72,16 +69,7 @@ void clipping(struct poly *window,struct poly *pol)
 		drawpolygon(window,red);
 		return ;
 	}
-	tpol.ver_num = k;
-	
-/*	
-	printf("point 1 ok\n");
-*/	
-	for (i = 0;i < tpol.ver_num; ++i) test_point(tpol.vertex[i]);
-	return ;
-	
-	
-	
+	tpol.ver_num = k;	
 	k = 0;
 	for (i = 0;i < window->ver_num; ++i)
 	{
@@ -96,15 +84,25 @@ void clipping(struct poly *window,struct poly *pol)
 			++k;
 		}
 	}
-//	printf("%d\n" , tpol.ver_num ) ;
-//	win.ver_num = k;
-//	 for (i = 0;i < win.ver_num; ++i)test_point(win.vertex[i]);
-//	return ;
+	win.ver_num = k;
+	
+	
+/*	for (i = 0;i < win.ver_num; ++i) 
+	{
+		printf("%d ",flag_win[i]);
+		test_point(win.vertex[i]);
+	} */
+//    return ;
+
+
 	makeline(&tpol);
 	makeline(&win);
 	int mark[MAX_INTERSECTION];
-	memset(mark,0,MAX_INTERSECTION);
+	memset(mark,0,sizeof(mark));
 //	printf("%d\n" , tpol.ver_num ) ;
+//	for (i = 0;i < tpol.ver_num; ++i) printf("%d\n",mark[i]);
+//	printf("---------\n" );
+//    printf("-----%d\n",mark[14]);
 	while (1)
 	{
 		int flag = 1;
@@ -112,50 +110,48 @@ void clipping(struct poly *window,struct poly *pol)
 			if (flag_pol[i] == 2 && mark[i] == 0)
 			{
 				mark[i] = 1;
-				flag=0;
+				flag = 0;
 				break;
 			}
 		if (flag) break;
 		k = 0;
 		while (1)
 		{
-//			printf("point 3 ok\n");
-			
 			while (flag_pol[i] != 1)
 			{
 				clip.vertex[k] = tpol.vertex[i];
 //				test_point(clip.vertex[k]);
 				++k;
 				i = (i+1) % tpol.ver_num;
-//				printf("%d\n" , tpol.ver_num ) ;
 			}
-//			printf("%d\n" , tpol.ver_num ) ; return ;
-//			printf("point 4 ok\n");
+			
+			
 			for (j = 0;j < win.ver_num; ++j)
 				if (eq_point(tpol.vertex[i],win.vertex[j])) break;
 //			printf("point 5 ok\n");
 			while (flag_win[j] != 2)
 			{
 				clip.vertex[k] = win.vertex[j];
+//				test_point(clip.vertex[k]);
 				++k;
+//				printf("%d\n" , j);
 				j = (j+1) % win.ver_num;
 			}
 //			printf("%d\n" , k);
-           
 			for (i = 0;i < tpol.ver_num; ++i)
-				if (eq_point(tpol.vertex[i],win.vertex[j])) break;
+				if (eq_point(tpol.vertex[i],win.vertex[j])) break;	
 			if (mark[i]) break;
 			mark[i] = 1;
 //			printf("point 7 ok\n");
 			
 		}
 		clip.ver_num = k;
-		printf("point 2 ok\n");
+//		printf("point 2 ok\n");
 		makeline(&clip);
-		fillpolygon(&clip,black,blue);
+		fillpolygon(&clip,blue,blue);
 //		printf("point 1 ok\n");
 	}
-	printf("point 1 ok\n");
+//	printf("point 1 ok\n");
 	drawpolygon(pol,yellow);
 	drawpolygon(window,red);
 }

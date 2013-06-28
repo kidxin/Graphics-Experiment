@@ -42,6 +42,8 @@ extern void swap_poi(struct point *p1,struct point *p2);
 
 extern struct point readpoint();
 
+extern int delta_x(struct slope slo,int y);
+
 extern void test_point(struct point p);
 
 extern struct line readline();

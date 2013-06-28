@@ -30,6 +30,7 @@ void myDisplay(void)
 
 	read_clip(&window,&pol_clip);
 	clipping(&window,&pol_clip);
+
 /*    readpolygon(&pol);
 	fillpolygon(&pol,red,blue);
 	readpolygon(&pol);

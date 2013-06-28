@@ -12,7 +12,7 @@ int comp_slope(const void *a,const void *b)
 	int t2 = ((struct slope *)a)->dy * ((struct slope *)b)->dx;
 	int t3 = ((struct slope *)a)->dx * ((struct slope *)b)->dx;
 	if (t3 <= 0) return ((struct slope *)a)->dx - ((struct slope *)b)->dx;
-	else return t2-t1;
+	else return t1-t2;
 }
 
 void makeline(struct poly *pol)
@@ -73,8 +73,8 @@ int in_poly(struct poly *pol,struct point p)
 void fillpolygon(struct poly *temp, struct colour edge,struct colour inter)
 {
 	int ver_num = temp->ver_num;
-	struct line pol[MAX_VERTEX], sweep;
-	sweep.p1.x=-200; sweep.p2.x=200;
+	struct line pol[MAX_VERTEX];
+//	sweep.p1.x=-200; sweep.p2.x=200;
 	int t;
 	for (t = 0;t < ver_num; ++t) 
 	{
@@ -124,11 +124,11 @@ void fillpolygon(struct poly *temp, struct colour edge,struct colour inter)
 //		test_line(tail->next->l);
 		while (tail != NULL)
 		{
-			sweep.p1.y = low; sweep.p2.y = low;
-			struct point t = intersection(sweep,tail->l);
+		//	sweep.p1.y = low; sweep.p2.y = low;
+		//	struct point t = intersection(sweep,tail->l);
 		//	printf("%d %d\n",t.x,t.y);
-		//	tail->x=tail->l.p1.x+delta_x(tail->l.sl,low-tail->l.p1.y);
-			tail->x = t.x;
+			tail->x=tail->l.p1.x+delta_x(tail->l.sl,low-tail->l.p1.y);
+		//	tail->x = t.x;
 			tail=tail->next;
 		}
 		glColor3f(inter.r,inter.g,inter.b);
@@ -151,6 +151,16 @@ void fillpolygon(struct poly *temp, struct colour edge,struct colour inter)
 			if (pol[i].p2.y<low) {++i; continue;}
 			struct tempor *lt = (struct tempor *)malloc(sizeof(struct tempor));
 			lt->l = pol[i];
+			lt->x = pol[i].p1.x;
+			if (lt->x < line_link->x)
+			{
+				lt->next = line_link;
+				line_link->pre = lt;
+				tail = lt;	
+				line_link = lt;
+				++i;
+				continue;
+			}
 			while (tail->next != NULL && tail->next->x <= pol[i].p1.x) tail = tail->next;
 			lt->next = tail->next;
 			if (tail->next != NULL) tail->next->pre=lt;
