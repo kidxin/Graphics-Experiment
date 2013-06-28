@@ -54,10 +54,7 @@ void drawcircle(struct point center,int rad)
 		}
     }
 }
-float sqr(float x)
-{
-    return x*x;
-}
+
 void drawellipse(struct point center,int a,int b)
 {
     int aa=a*a,bb=b*b;

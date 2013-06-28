@@ -5,6 +5,7 @@
 #include "include/basic.h"
 #include "include/circle.h"
 #include "include/polygon.h"
+#include "include/clipping.h"
 
 
 
@@ -26,8 +27,14 @@ void myDisplay(void)
 //    glRectf(-0.5f, -0.5f, 0.5f, 0.5f);
 	
     glBegin(GL_POINTS);
-    readpolygon(&pol1);
-	fillpolygon(&pol1,red,blue);
+
+	read_clip(&window,&pol_clip);
+	clipping(&window,&pol_clip);
+/*    readpolygon(&pol);
+	fillpolygon(&pol,red,blue);
+	readpolygon(&pol);
+	fillpolygon(&pol,red,blue);
+	*/
 /*	l.p1=readpoint();
 	l.p2=readpoint();
 	drawline(l,white);  */
@@ -38,7 +45,7 @@ void myDisplay(void)
     glEnd();
 
     glFlush();
-    
+//    while(1) r=r+1;
     glClear(GL_COLOR_BUFFER_BIT);
     printf("Please enter the center and radius of the circle:\n");
     scanf("%d%d%d",&end1.x,&end1.y,&r);
@@ -64,7 +71,8 @@ void myDisplay(void)
     glFlush();
 
 }
-void ChangeSize(int w, int h) {
+void ChangeSize(int w, int h) 
+{
     GLfloat nRange = 200.0f;
 
     // Prevent a divide by zero
@@ -89,6 +97,11 @@ void ChangeSize(int w, int h) {
 }
 int main(int argc, char *argv[])
 {
+	fin = fopen(argv[1], "r");
+	if (!fin) {
+    	perror(argv[1]);
+    	return 1;
+    }
     glutInit(&argc, argv); 
     glutInitDisplayMode(GLUT_RGB | GLUT_SINGLE| GLUT_DEPTH);
     glutInitWindowSize(600, 600);

@@ -11,7 +11,7 @@ struct poly
 	int ver_num;
 };
 
-struct poly pol1,pol2;
+struct poly pol;
 
 
 extern void readpolygon(struct poly *pol);
@@ -19,5 +19,9 @@ extern void readpolygon(struct poly *pol);
 extern void drawpolygon(struct poly *pol,struct colour c);
 
 extern void fillpolygon(struct poly *temp, struct colour edge,struct colour inter);
+
+extern int in_poly(struct poly *pol,struct point p);
+
+extern void makeline(struct poly *pol);
 
 #endif

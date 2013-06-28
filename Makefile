@@ -1,8 +1,11 @@
 # insert the name of your source file here (omit the .c)
 TARGET = graph
-ESSENTIAL = include/basic.o include/polygon.o include/circle.o
+ESSENTIAL = include/basic.o include/polygon.o include/circle.o include/clipping.o
+BASIC = include/basic
+CIRCLE = include/circle
+POLY = include/polygon
+CLIP = include/clipping
 LIBS = -lglut -lGLU -lGL  -lXext -lX11 -lm
-
 CC = gcc
 
 default: $(TARGET)
@@ -15,19 +18,22 @@ all: default
 $(TARGET): $(TARGET).o $(ESSENTIAL)
 	$(CC) $(TARGET).c $(ESSENTIAL) -Wall $(LIBS) -o $(TARGET)
 
-include/basic.o: include/basic.c include/basic.h
-	gcc -c include/basic.c -o include/basic.o
+$(BASIC).o: $(BASIC).c $(BASIC).h
+	gcc -c $(BASIC).c -o $(BASIC).o
 
-include/polygon.o: include/polygon.c include/polygon.h include/basic.h
-	gcc -c include/polygon.c -o include/polygon.o
+$(POLY).o: $(POLY).c $(POLY).h $(BASIC).h
+	gcc -c $(POLY).c -o $(POLY).o
 
-include/circle.o: include/circle.c include/circle.h include/basic.h
-	gcc -c include/circle.c -o include/circle.o
-	
+$(CIRCLE).o: $(CIRCLE).c $(CIRCLE).h $(BASIC).h
+	gcc -c $(CIRCLE).c -o $(CIRCLE).o
+
+$(CLIP).o: $(CLIP).c $(POLY).h $(CLIP).h
+	gcc -c $(CLIP).c -o $(CLIP).o
+
 clean:
 	-rm -f *.o $(TARGET)
 	-rm -f include/*.o
 
 clear:
-	-rm -f *.o 
-	-rm -f include/*.o
+	-rm -f *.o *~
+	-rm -f include/*.o include/*~

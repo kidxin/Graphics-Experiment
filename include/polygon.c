@@ -11,7 +11,7 @@ int comp_slope(const void *a,const void *b)
 	int t1 = ((struct slope *)a)->dx * ((struct slope *)b)->dy;
 	int t2 = ((struct slope *)a)->dy * ((struct slope *)b)->dx;
 	int t3 = ((struct slope *)a)->dx * ((struct slope *)b)->dx;
-	if (t3 < 0) return ((struct slope *)a)->dx - ((struct slope *)b)->dx;
+	if (t3 <= 0) return ((struct slope *)a)->dx - ((struct slope *)b)->dx;
 	else return t2-t1;
 }
 
@@ -34,9 +34,9 @@ void nomalize(struct line *l)
 
 void readpolygon(struct poly *pol)
 {
-	scanf("%d",&pol->ver_num);
+	fscanf(fin,"%d",&pol->ver_num);
 	int i;
-	for (i=0;i<pol->ver_num;++i)  pol->vertex[i]=readpoint();
+	for (i=0;i < pol->ver_num;++i)  pol->vertex[i]=readpoint();
 	makeline(pol);
 }
 
@@ -58,12 +58,23 @@ int comp_line(const void *a,const void *b)
 	else return comp_slope(&((struct line *)a)->sl,&((struct line *)b)->sl);
 }
 
-
+int in_poly(struct poly *pol,struct point p)
+{
+	struct line l;
+	l.p1 = p; l.p2 = p;
+	l.p2.x += 401;
+	l.p2.y += 1;
+	int i,j = 0;
+	for (i = 0;i < pol->ver_num; ++i)
+		if (interset(l, pol->edge[i])) ++j;
+	return j&1;
+}
 
 void fillpolygon(struct poly *temp, struct colour edge,struct colour inter)
 {
 	int ver_num = temp->ver_num;
-	struct line pol[MAX_VERTEX];
+	struct line pol[MAX_VERTEX], sweep;
+	sweep.p1.x=-200; sweep.p2.x=200;
 	int t;
 	for (t = 0;t < ver_num; ++t) 
 	{
@@ -113,7 +124,11 @@ void fillpolygon(struct poly *temp, struct colour edge,struct colour inter)
 //		test_line(tail->next->l);
 		while (tail != NULL)
 		{
-			tail->x=tail->l.p1.x+delta_x(tail->l.sl,low-tail->l.p1.y);
+			sweep.p1.y = low; sweep.p2.y = low;
+			struct point t = intersection(sweep,tail->l);
+		//	printf("%d %d\n",t.x,t.y);
+		//	tail->x=tail->l.p1.x+delta_x(tail->l.sl,low-tail->l.p1.y);
+			tail->x = t.x;
 			tail=tail->next;
 		}
 		glColor3f(inter.r,inter.g,inter.b);
