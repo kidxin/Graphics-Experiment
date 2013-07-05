@@ -11,7 +11,10 @@ struct slope
 	int dx,dy;
 };
 
-
+struct plane
+{
+	int x,y,z,d;
+};
 
 struct line
 {
@@ -24,7 +27,7 @@ struct colour
 	float r,g,b;
 };
 
-struct colour black,red,white,green,yellow,blue;
+struct colour black,red,white,green,yellow,blue,indigo;
 
 FILE *fin;
 
@@ -34,6 +37,8 @@ extern void swap(int *x,int *y);
 
 extern float sqr(float x);
 
+extern void readint(int *i);
+
 extern int eq_point(struct point p1,struct point p2);
 
 extern int dis(struct point p1,struct point p2);
@@ -41,6 +46,10 @@ extern int dis(struct point p1,struct point p2);
 extern void swap_poi(struct point *p1,struct point *p2);
 
 extern struct point readpoint();
+
+extern struct colour readcolor();
+
+extern struct plane readplane();
 
 extern int delta_x(struct slope slo,int y);
 

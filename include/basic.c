@@ -12,6 +12,7 @@ void setcolour()
 	green.r = 0; green.g = 1; green.b = 0;
 	blue.r = 0; blue.g = 0; blue.b = 1;
 	yellow.r = 1; yellow.g = 1; yellow.b = 0;
+	indigo.r = 0; indigo.g = 1; indigo.b = 1;
 }
 
 int min(int x,int y)
@@ -44,10 +45,17 @@ void swap_poi(struct point *p1,struct point *p2)
 	*p2=t;
 }
 
+void readint(int *i)
+{
+	fscanf(fin,"%d",i);
+}
+
 struct point readpoint()
 {
 	struct point p;
-	fscanf(fin,"%d %d",&p.x,&p.y);
+//	fscanf(fin,"%d %d",&p.x,&p.y);
+	readint(&p.x);
+	readint(&p.y);
 	return p;
 }
 
@@ -57,6 +65,34 @@ struct line readline()
 	l.p1=readpoint();
 	l.p2=readpoint();
 	return l;	
+}
+
+struct plane readplane()
+{
+	struct plane pl;
+	readint(&pl.x);
+	readint(&pl.y);
+	readint(&pl.z);
+	readint(&pl.d);
+//	fscanf(fin,"%d %d %d %d",&pl.x,&pl.y,&pl.z,&pl.d);
+	return pl;
+}
+
+struct colour readcolor()
+{
+	int i;
+	readint(&i);
+	switch (i)
+	{
+		case 0: return black;
+		case 1: return white;
+		case 2: return red;
+		case 3: return green;
+		case 4: return blue;
+		case 5: return yellow;
+		case 6: return indigo;
+		default : return black;
+	}	
 }
 
 int eq_point(struct point p1,struct point p2)
@@ -78,10 +114,10 @@ void cal_sl(struct line *l)
 
 int delta_x(struct slope slo,int y)
 {
-	int x = y*(float)slo.dx/slo.dy;
-	if (abs(x*slo.dy-slo.dx*y)>abs((x-1)*slo.dy-slo.dx*y)) --x;
-	if (abs(x*slo.dy-slo.dx*y)>abs((x+1)*slo.dy-slo.dx*y)) ++x;
-	return x;
+//	int x = y*(float)slo.dx/slo.dy;
+//	if (abs(x*slo.dy-slo.dx*y)>abs((x-1)*slo.dy-slo.dx*y)) --x;
+//	if (abs(x*slo.dy-slo.dx*y)>abs((x+1)*slo.dy-slo.dx*y)) ++x;
+	return (int)(y*(double)slo.dx/slo.dy+0.5);
 }
 
 void test_line(struct line l)
@@ -118,11 +154,11 @@ int interset(struct line l1, struct line l2)
 	d2 = direction(l2.p1, l2.p2, l1.p2);
 	d3 = direction(l1.p1, l1.p2, l2.p1);
 	d4 = direction(l1.p1, l1.p2, l2.p2);
-	if (d1*d2 < 0 && d3*d4 < 0) return 1;
-	if (d1 == 0 && onseg(l2.p1, l2.p2, l1.p1)) return 1;
-	if (d2 == 0 && onseg(l2.p1, l2.p2, l1.p2)) return 1;
-	if (d3 == 0 && onseg(l1.p1, l1.p2, l2.p1)) return 1;
-	if (d4 == 0 && onseg(l1.p1, l1.p2, l2.p2)) return 1; 
+	if (((d1 > 0 && d2 < 0) || (d1 < 0 && d2 >0)) && ((d3 > 0 && d4 < 0) || (d3 < 0 && d4 >0))) return 1;
+	if (d1 == 0 && onseg(l2.p1, l2.p2, l1.p1)) return 2;
+	if (d2 == 0 && onseg(l2.p1, l2.p2, l1.p2)) return 3;
+	if (d3 == 0 && onseg(l1.p1, l1.p2, l2.p1)) return 4;
+	if (d4 == 0 && onseg(l1.p1, l1.p2, l2.p2)) return 5; 
 	return 0;
 }
 
@@ -141,6 +177,7 @@ void drawline(struct line l,struct colour c)
 {
 	struct point p1=l.p1, p2=l.p2;
     int dx,dy,sx,sy,change;
+    glColor3f(c.r,c.g,c.b);
     dx=abs(p1.x-p2.x);
     dy=abs(p1.y-p2.y);
     if (p2.x>p1.x) sx=1; else sx=-1;
@@ -154,7 +191,6 @@ void drawline(struct line l,struct colour c)
     int diff=2*dy-dx,i;
     for (i=0;i<dx;i++)
     {	
-    	glColor3f(c.r,c.g,c.b);
 		glVertex2i(p1.x,p1.y);
 		while (diff>0)
 		{

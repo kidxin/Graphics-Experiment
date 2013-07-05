@@ -76,6 +76,7 @@ void fillpolygon(struct poly *temp, struct colour edge,struct colour inter)
 	struct line pol[MAX_VERTEX];
 //	sweep.p1.x=-200; sweep.p2.x=200;
 	int t;
+	glColor3f(inter.r,inter.g,inter.b);
 	for (t = 0;t < ver_num; ++t) 
 	{
 		pol[t]=temp->edge[t];
@@ -131,13 +132,12 @@ void fillpolygon(struct poly *temp, struct colour edge,struct colour inter)
 		//	tail->x = t.x;
 			tail=tail->next;
 		}
-		glColor3f(inter.r,inter.g,inter.b);
 		tail = line_link;   
 	//	printf("OK-----1\n");
 		while (tail != NULL)
 		{
 			int t;
-			for (t = tail->x; t <= tail->next->x; ++t) glVertex2i(t,low);
+			for (t = tail->x; t < tail->next->x; ++t) glVertex2i(t,low);
 			
 			tail = tail->next->next;
 			

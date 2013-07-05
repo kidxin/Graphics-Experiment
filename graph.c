@@ -6,14 +6,14 @@
 #include "include/circle.h"
 #include "include/polygon.h"
 #include "include/clipping.h"
-
+#include "include/shadow.h"
 
 
 
 void myDisplay(void)
 {
     struct point end1;
-    struct line l;
+ //   struct line l;
     
     int r,a,b;
     setcolour();
@@ -28,10 +28,11 @@ void myDisplay(void)
 	
     glBegin(GL_POINTS);
 
-	read_clip(&window,&pol_clip);
-	clipping(&window,&pol_clip);
+	zbuffer();
+//	read_clip(&window,&pol_clip);
+//	clipping(&window,&pol_clip);
 
-/*    readpolygon(&pol);
+ /*   readpolygon(&pol);
 	fillpolygon(&pol,red,blue);
 	readpolygon(&pol);
 	fillpolygon(&pol,red,blue);
