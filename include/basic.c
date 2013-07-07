@@ -1,8 +1,5 @@
 #include "basic.h"
-#include <GL/glut.h>
-#include <stdlib.h> 
-#include <stdio.h>
-#include <math.h>
+
 
 void setcolour()
 {
@@ -15,20 +12,21 @@ void setcolour()
 	indigo.r = 0; indigo.g = 1; indigo.b = 1;
 }
 
-int min(int x,int y)
+double min(double x,double y)
 {
  	if (x < y) return x;
  	else return y;
 }
 
+double max(double x,double y)
+{
+	if (x > y) return x; 
+	return y;
+}
+
 float sqr(float x)
 {
     return x*x;
-}
-
-int max(int x,int y)
-{
-	return x+y-min(x,y);
 }
 
 void swap(int *x,int *y)
@@ -53,7 +51,6 @@ void readint(int *i)
 struct point readpoint()
 {
 	struct point p;
-//	fscanf(fin,"%d %d",&p.x,&p.y);
 	readint(&p.x);
 	readint(&p.y);
 	return p;
@@ -74,7 +71,6 @@ struct plane readplane()
 	readint(&pl.y);
 	readint(&pl.z);
 	readint(&pl.d);
-//	fscanf(fin,"%d %d %d %d",&pl.x,&pl.y,&pl.z,&pl.d);
 	return pl;
 }
 

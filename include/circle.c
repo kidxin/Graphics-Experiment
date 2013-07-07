@@ -1,7 +1,3 @@
-#include <GL/glut.h>
-#include <stdlib.h> 
-#include <stdio.h>
-#include <math.h>
 #include "circle.h"
 
 

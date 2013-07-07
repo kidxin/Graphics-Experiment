@@ -11,5 +11,7 @@ extern void read_clip(struct poly *window,struct poly *pol);
 
 extern void clipping(struct poly *window,struct poly *pol);
 
+extern void liang();
+
 
 #endif

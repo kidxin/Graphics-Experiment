@@ -1,11 +1,12 @@
 # insert the name of your source file here (omit the .c)
 TARGET = graph
-ESSENTIAL = include/basic.o include/polygon.o include/circle.o include/clipping.o include/shadow.o
+ESSENTIAL = include/basic.o include/polygon.o include/circle.o include/clipping.o include/shadow.o include/curve.o
 BASIC = include/basic
 CIRCLE = include/circle
 POLY = include/polygon
 CLIP = include/clipping
 SHADOW = include/shadow
+CURVE = include/curve
 LIBS = -lglut -lGLU -lGL  -lXext -lX11 -lm
 CC = gcc
 
@@ -33,6 +34,9 @@ $(CLIP).o: $(CLIP).c $(POLY).h $(CLIP).h
 
 $(SHADOW).o: $(SHADOW).c $(POLY).h $(SHADOW).h
 	$(CC) -c $(SHADOW).c -o $(SHADOW).o
+	
+$(CURVE).o: $(CURVE).c $(CURVE).h $(BASIC).h
+	$(CC) -c $(CURVE).c -o $(CURVE).o
 
 clean:
 	-rm -f *.o $(TARGET)

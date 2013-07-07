@@ -1,6 +1,9 @@
 #ifndef __BASIC_H_
 #define __BASIC_H_
 #include <stdio.h>
+#include <GL/glut.h>
+#include <stdlib.h> 
+#include <math.h>
 struct point
 {
     int x,y;
@@ -71,5 +74,8 @@ extern int interset(struct line l1, struct line l2);
 
 extern struct point intersection(struct line l1,struct line l2);
 
+extern double min(double x,double y);
+
+extern double max(double x,double y);
 
 #endif

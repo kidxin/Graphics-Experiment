@@ -1,7 +1,3 @@
-#include <GL/glut.h>
-#include <stdlib.h> 
-#include <stdio.h>
-#include <math.h>
 #include <string.h>
 #include "clipping.h"
 
@@ -21,6 +17,82 @@ int comp_dis(const void *a,const void *b)
 {
 	return ((struct storp *)a)->dis-((struct storp *)b)->dis;
 }
+
+
+
+double u1, u2;
+
+void range(double t1,double t2,int d)
+{
+	if (d == 0) return;
+	if (d < 0)
+	{
+		u1 = max(t2/d,u1);
+		u2 = min(t1/d,u2);
+	}else
+	{
+		u1 = max(t1/d,u1);
+		u2 = min(t2/d,u2);
+	}
+}
+
+void liang()
+{
+	int x1,x2,y1,y2,n,i;
+	struct line l;
+	readint(&x1);
+	readint(&x2);
+	readint(&y1);
+	readint(&y2);
+	readint(&n);
+	for (i = 0;i < n;++i)
+	{
+
+		l = readline();
+		int dx = l.p2.x - l.p1.x;
+		int dy = l.p2.y - l.p1.y;
+		u1 = 0;
+	 	u2 = 1;
+		range(x1-l.p1.x,x2-l.p1.x,dx);
+		range(y1-l.p1.y,y2-l.p1.y,dy);
+	//	printf("%lf %lf\n",u1,u2 );
+		if (u1 < u2)
+		{
+			struct line lt;
+			lt = l;
+			if (u1 > 0) 
+			{
+				lt.p2.x = (int)(l.p1.x + u1*dx+0.5);
+				lt.p2.y = (int)(l.p1.x + u2*dx+0.5);
+				drawline(lt,white);
+			}
+			if (u2 < 1)
+			{
+				lt.p2 = l.p2;
+				lt.p1.x = (int)(l.p1.x + u2*dx + 0.5);
+				lt.p1.y = (int)(l.p1.y + u2*dy + 0.5);
+				drawline(lt,white);
+			}
+			lt.p1.x = (int)(l.p1.x + u1*dx + 0.5);
+			lt.p2.x = (int)(l.p1.x + u2*dx + 0.5);
+			lt.p1.y = (int)(l.p1.y + u1*dy + 0.5);
+			lt.p2.y = (int)(l.p1.y + u2*dy + 0.5);
+			drawline(lt,blue);
+		}
+		else  drawline(l,white);
+		
+	}
+	l.p1.x = x1; l.p1.y = y1;
+	l.p2.x = x1; l.p2.y = y2;
+	drawline(l,red);
+	l.p2.x = x2; l.p2.y = y1;
+	drawline(l,red);
+	l.p1.x = x2; l.p1.y = y2;
+	drawline(l,red);
+	l.p2.x = x1; l.p2.y = y2;
+	drawline(l,red);
+}
+
 
 void clipping(struct poly *window,struct poly *pol)
 {
