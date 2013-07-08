@@ -44,4 +44,4 @@ clean:
 
 clear:
 	-rm -f *.o *~
-	-rm -f include/*.o include/*~
+	-rm -f include/*.o include/*~ test/*~

@@ -3,6 +3,8 @@
 
 #include "basic.h"
 #define MAX_CONTROL 50
+#define MAX_SUR 5
+#define MAX_DEPTH 5
 
 extern void drawcurve();
 

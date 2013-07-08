@@ -30,7 +30,7 @@ void nomalize(struct line *l)
 
 void readpolygon(struct poly *pol)
 {
-	fscanf(fin,"%d",&pol->ver_num);
+	readint(&pol->ver_num);
 	int i;
 	for (i=0;i < pol->ver_num;++i)  pol->vertex[i]=readpoint();
 	makeline(pol);

@@ -52,13 +52,13 @@ void myDisplay(void)
 		case 1: l = readline(); c = readcolor(); drawline(l,c);
        			fclose(fin); choice = 100; break;
        			
-        case 2: center = readpoint(); readint(&r); drawcircle(center,r);
+        case 2: center = readpoint(); readint(&r); c = readcolor(); drawcircle(center,r,c);
        			fclose(fin); choice = 100; break;
        			
-        case 3: center = readpoint(); readint(&a); readint(&b); drawellipse(center,a,b);
+        case 3: center = readpoint(); readint(&a); readint(&b); c = readcolor(); drawellipse(center,a,b,c);
        			fclose(fin); choice = 100; break;
        			
-        case 4:
+        case 4: readpolygon(&pol); fillpolygon(&pol,white,indigo);
      			fclose(fin); choice = 100; break;
      			
      	case 5: liang();
@@ -82,16 +82,6 @@ void myDisplay(void)
     glEnd();
     glFlush();
     
-/*
-    
-    glClear(GL_COLOR_BUFFER_BIT);
-    printf("Please enter the coordinates of end points:\n");
-//    readpolygon();
-    glBegin(GL_POINTS);
-	drawellipse(end1,a,b);	
-    glEnd();
-    glFlush();
-*/
 }
 
 
@@ -151,16 +141,18 @@ void curve(GLint option)
 	glutPostRedisplay ();
 }
 
-
-
+void fillpol(GLint option)
+{
+	switch (option)
+	{
+		case 1: fin = fopen("test/fillpolygon", "r"); choice = 4; break;
+	}
+	glutPostRedisplay ();
+}
 
 void mainmenu(GLint option)
 {
-/*	switch (option)
-	{
-		
-	}*/
-	choice = 0;
+	glutPostRedisplay ();
 }
 
 void blank(GLint option)
@@ -174,7 +166,7 @@ int main(int argc, char *argv[])
     
     glutInitWindowSize(600, 600);
     glutInitWindowPosition(200, 200);
-    glutCreateWindow("Opengl Project");
+    glutCreateWindow("Graphic Experiment");
     
     choice = 0;
     
@@ -182,7 +174,7 @@ int main(int argc, char *argv[])
     
     glutDisplayFunc(&myDisplay);
     
-    GLint Basic, Clipping, Curve, Shadow;
+    GLint Basic, Clipping, Curve, Shadow, Fill;
     
     Basic = glutCreateMenu(blank);
     
@@ -191,9 +183,12 @@ int main(int argc, char *argv[])
     	glutAddMenuEntry ("Circle", 2);
     	glutAddMenuEntry ("Ellipse", 3);
     	
+    Fill = glutCreateMenu(fillpol);
+    	glutAddMenuEntry ("Scan line", 1);
+    	
     Clipping = glutCreateMenu(clip);
     	glutAddMenuEntry ("Liang", 1);
-    	glutAddMenuEntry ("Weiler¨CAtherton", 2);
+    	glutAddMenuEntry ("Weiler Atherton", 2);
     
     Shadow = glutCreateMenu(shadow);
     	glutAddMenuEntry ("Zbuffer", 1);
@@ -204,6 +199,7 @@ int main(int argc, char *argv[])
     
     glutCreateMenu(mainmenu);
     	glutAddSubMenu ("Element", Basic);
+    	glutAddSubMenu ("Fill", Fill);
     	glutAddSubMenu ("Clipping", Clipping);
     	glutAddSubMenu ("Shadow", Shadow);
     	glutAddSubMenu ("Curve", Curve);

@@ -7,10 +7,11 @@ void moved(struct point *now,int *diff)
     now->y=now->y-1;
     diff=diff+2*now->x-2*now->y+2;
 }
-void drawcircle(struct point center,int rad)
+void drawcircle(struct point center,int rad,struct colour c)
 {
     struct point now;
     int diff;
+    glColor3f(c.r,c.g,c.b);
     now.x=0;
     now.y=rad;
     diff=2*(1-rad);
@@ -51,11 +52,12 @@ void drawcircle(struct point center,int rad)
     }
 }
 
-void drawellipse(struct point center,int a,int b)
+void drawellipse(struct point center,int a,int b,struct colour c)
 {
     int aa=a*a,bb=b*b;
     float diff;
     struct point now;
+    glColor3f(c.r,c.g,c.b);
     now.x=a; now.y=0;
     diff=aa-a*bb+(float)bb/4;
     while (bb*now.x>aa*now.y)

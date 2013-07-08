@@ -30,7 +30,7 @@ struct colour
 	float r,g,b;
 };
 
-struct colour black,red,white,green,yellow,blue,indigo;
+struct colour black,red,white,green,yellow,blue,indigo,magenta;
 
 FILE *fin;
 

@@ -10,6 +10,7 @@ void setcolour()
 	blue.r = 0; blue.g = 0; blue.b = 1;
 	yellow.r = 1; yellow.g = 1; yellow.b = 0;
 	indigo.r = 0; indigo.g = 1; indigo.b = 1;
+	magenta.r = 1; magenta.g = 0; magenta.b = 1;
 }
 
 double min(double x,double y)
@@ -87,6 +88,7 @@ struct colour readcolor()
 		case 4: return blue;
 		case 5: return yellow;
 		case 6: return indigo;
+		case 7: return magenta;
 		default : return black;
 	}	
 }

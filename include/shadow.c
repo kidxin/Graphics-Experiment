@@ -43,3 +43,5 @@ void zbuffer()
 			glVertex2i(i,j);
 		}
 }
+
+
