@@ -13,6 +13,27 @@ void setcolour()
 	magenta.r = 1; magenta.g = 0; magenta.b = 1;
 }
 
+int getred(struct point p)
+{
+	GLint pixel;
+	glReadPixels(p.x + 300, p.y + 300, 1, 1, GL_RED, GL_INT, &pixel);
+	return pixel;
+}
+
+int getgreen(struct point p)
+{
+	GLint pixel;
+	glReadPixels(p.x + 300, p.y + 300, 1, 1, GL_GREEN, GL_INT, &pixel);
+	return pixel;
+}
+
+int getblue(struct point p)
+{
+	GLint pixel;
+	glReadPixels(p.x + 300, p.y + 300, 1, 1, GL_BLUE, GL_INT, &pixel);
+	return pixel;
+}
+
 double min(double x,double y)
 {
  	if (x < y) return x;

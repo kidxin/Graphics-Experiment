@@ -1,7 +1,5 @@
 #include "polygon.h"
 
-
-
 int comp_slope(const void *a,const void *b)
 {
 	int t1 = ((struct slope *)a)->dx * ((struct slope *)b)->dy;
@@ -58,12 +56,61 @@ int in_poly(struct poly *pol,struct point p)
 {
 	struct line l;
 	l.p1 = p; l.p2 = p;
-	l.p2.x += 401;
+	l.p2.x += 601;
 	l.p2.y += 1;
 	int i,j = 0;
 	for (i = 0;i < pol->ver_num; ++i)
-		if (interset(l, pol->edge[i])) ++j;
+		if (interset(l, pol->edge[i]) > 1) return 1;
+		else if (interset(l, pol->edge[i]) == 1) ++j;
 	return j&1;
+}
+
+struct plist
+{
+	struct point p;
+	struct plist *next;
+};
+
+struct plist  *creatpl(struct plist *tail, struct point p)
+{
+	glBegin(GL_POINTS);
+	glVertex2i(p.x,p.y);
+	glEnd();
+	struct plist *temp = (struct plist *)malloc(sizeof(struct plist));
+	temp->p = p;
+	temp->next = NULL;
+	tail->next = temp;
+	return temp;
+}
+
+void fillseed(struct point seed)
+{
+	glEnd();
+	if (getred(seed)) return;
+	glColor3f(1,0,0);
+	struct plist *head = (struct plist *)malloc(sizeof(struct plist));
+	head->p = seed;
+	struct plist *tail;
+	tail = head;
+	while (head != NULL)
+	{
+		glFlush();
+		struct point p;
+		p = head->p;
+		++p.x;
+		if (getred(p) == 0) tail = creatpl(tail,p);		
+		p.x -= 2;
+		if (getred(p) == 0) tail = creatpl(tail,p);
+		++p.x; ++p.y;
+		if (getred(p) == 0) tail = creatpl(tail,p);
+		p.y-=2;
+		if (getred(p) == 0) tail = creatpl(tail,p);
+		struct plist *t;
+		t = head;
+		head = head->next;		
+		free(t);
+		
+	}
 }
 
 void fillpolygon(struct poly *temp, struct colour edge,struct colour inter)
@@ -79,8 +126,6 @@ void fillpolygon(struct poly *temp, struct colour edge,struct colour inter)
 		nomalize(&pol[t]);
 	}
 	qsort(pol,ver_num,sizeof(struct line),comp_line);
-//	int t;
-//	for (t=0;t<ver_num;++t) test_line(pol[t]);
 	int low,i = 0;
 	struct tempor
 	{
@@ -89,8 +134,6 @@ void fillpolygon(struct poly *temp, struct colour edge,struct colour inter)
 		struct tempor *next, *pre;
 	};
 	struct tempor *line_link, *tail, *liberty;
-//	if (line_link!= NULL) printf("ok");
-//	for (i=0;i<ver_num;++i) printf("%d %d\n",pol[i].p1.x,pol[i].p1.y);
 	low = pol[0].p1.y+1;
 	line_link = NULL;
 	while (pol[i].p1.y<low) 
@@ -117,19 +160,12 @@ void fillpolygon(struct poly *temp, struct colour edge,struct colour inter)
 	while (line_link != NULL)
 	{
 		tail=line_link;
-//		test_line(tail->l);
-//		test_line(tail->next->l);
 		while (tail != NULL)
 		{
-		//	sweep.p1.y = low; sweep.p2.y = low;
-		//	struct point t = intersection(sweep,tail->l);
-		//	printf("%d %d\n",t.x,t.y);
 			tail->x=tail->l.p1.x+delta_x(tail->l.sl,low-tail->l.p1.y);
-		//	tail->x = t.x;
 			tail=tail->next;
 		}
 		tail = line_link;   
-	//	printf("OK-----1\n");
 		while (tail != NULL)
 		{
 			int t;
@@ -138,7 +174,6 @@ void fillpolygon(struct poly *temp, struct colour edge,struct colour inter)
 			tail = tail->next->next;
 			
 		}
-	//	printf("2-----OK\n");
 		++low;
 		tail = line_link;
 		
@@ -163,12 +198,8 @@ void fillpolygon(struct poly *temp, struct colour edge,struct colour inter)
 			lt->pre = tail;
 			tail->next = lt;
 			tail = lt;
-	//		lt = line_link;
-	//		while (lt != NULL) {test_line(lt->l); lt = lt->next;}
 			++i;
 		}
-		
-	//	printf("OK-----1\n");
 		tail = line_link;
 		while (tail != NULL)
 		{
@@ -179,8 +210,6 @@ void fillpolygon(struct poly *temp, struct colour edge,struct colour inter)
 				if (tail == line_link)  line_link = tail->next;
 				else   
 				{
-		//			test_line(tail->pre->l);
-		//			printf("OK-----1\n");
 					tail->pre->next = tail->next;
 					if (tail->next != NULL) tail->next->pre=tail->pre;
 				}
@@ -189,9 +218,7 @@ void fillpolygon(struct poly *temp, struct colour edge,struct colour inter)
 			}
 			else tail = tail->next;
 			
-		}
-	//	printf("2-----OK\n");
-		
+		}	
 	}
 	drawpolygon(temp,edge);
 

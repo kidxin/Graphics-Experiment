@@ -6,12 +6,14 @@
 #include "include/curve.h"
 #include <unistd.h>
 
-int choice;
+int choice, flag;
+struct point seedpoint;
+
 
 void ChangeSize(int w, int h) 
 {
-    GLfloat nRange = 200.0f;
-
+    GLfloat nRange = 300.0f;
+    
     // Prevent a divide by zero
     if(h == 0)
     h = 1;
@@ -40,12 +42,10 @@ void myDisplay(void)
     struct colour c;
     int r,a,b;
     setcolour();  
-    glPointSize(2);
-//    glRectf(-0.5f, -0.5f, 0.5f, 0.5f);
+//    glPointSize(1);
 	ChangeSize(600,600);
-	if (choice != 100) glClear(GL_COLOR_BUFFER_BIT);
+	if (choice != 100 && choice != 17) glClear(GL_COLOR_BUFFER_BIT);
     glBegin(GL_POINTS);
-
 	switch (choice)
 	{
       	case 0:  break;
@@ -72,16 +72,29 @@ void myDisplay(void)
      			fclose(fin); choice = 100; break;
      
         case 9: drawcurve(); 
-				fclose (fin); choice = 100;break;
+				fclose (fin); choice = 100; break;
        		  
         case 10: drawsurface(); 
-				fclose (fin); choice = 100;break;
+				fclose (fin); choice = 100; break;
+			
+		case 11: readpolygon(&pol); drawpolygon(&pol,white); 
+				fclose(fin); choice = 17; flag = 0; break;
+		
+		case 17: fillseed(seedpoint); break;
        		  
        default: break;
    	}
     glEnd();
     glFlush();
-    
+ /*   struct point p;
+    int i,j;
+    for (i = -5; i<10; ++i)
+    	for (j =-5; j< 10;++j)
+    	{	
+    		p.x = i; p.y =j;
+    		printf("red--%d %d-----%d\n",i,j,getred(p));
+    	}
+ */  		
 }
 
 
@@ -146,6 +159,7 @@ void fillpol(GLint option)
 	switch (option)
 	{
 		case 1: fin = fopen("test/fillpolygon", "r"); choice = 4; break;
+		case 2: fin = fopen("test/seed","r"); choice = 11; break;
 	}
 	glutPostRedisplay ();
 }
@@ -159,13 +173,31 @@ void blank(GLint option)
 {
 }
 
+void mousedeal(GLint button, GLint action,GLint xMouse,GLint yMouse)
+{
+	if (button == GLUT_LEFT_BUTTON && action == GLUT_DOWN)
+	{
+		switch (choice)
+		{
+			case 17: seedpoint.x = xMouse - 300; seedpoint.y = 300 -yMouse; break; 
+			
+			default: return;
+		}
+	}
+	if (choice == 17) 
+	{
+		if (flag) glutPostRedisplay ();
+		else flag = 1;
+	}
+}
+
 int main(int argc, char *argv[])
 {
     glutInit(&argc, argv); 
     glutInitDisplayMode(GLUT_RGB | GLUT_SINGLE| GLUT_DEPTH);
     
     glutInitWindowSize(600, 600);
-    glutInitWindowPosition(200, 200);
+    glutInitWindowPosition(300, 300);
     glutCreateWindow("Graphic Experiment");
     
     choice = 0;
@@ -185,6 +217,7 @@ int main(int argc, char *argv[])
     	
     Fill = glutCreateMenu(fillpol);
     	glutAddMenuEntry ("Scan line", 1);
+    	glutAddMenuEntry ("Seed", 2);
     	
     Clipping = glutCreateMenu(clip);
     	glutAddMenuEntry ("Liang", 1);
@@ -207,7 +240,7 @@ int main(int argc, char *argv[])
     
     glutAttachMenu (GLUT_RIGHT_BUTTON);
     
-    
+    glutMouseFunc (mousedeal);
     
     glutMainLoop();
 

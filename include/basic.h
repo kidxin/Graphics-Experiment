@@ -78,4 +78,10 @@ extern double min(double x,double y);
 
 extern double max(double x,double y);
 
+extern int getred(struct point p);
+
+extern int getgreen(struct point p);
+
+extern int getblue(struct point p);
+
 #endif

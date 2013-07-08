@@ -83,76 +83,6 @@ void drawcurve()
 	separate(origin);
 }
 
-/*struct pointd tempd[MAX_SUR][MAX_SUR][MAX_SUR][MAX_SUR];
-void recur(struct pointd origin[m][n],int depth)
-{
-	int i,j,k,l;
-	struct point p;
-	++s;
-	printf("ok %d\n",s);
-	if (depth ==  MAX_DEPTH) 
-	{
-		printf("This is  %d begin\n",s);
-		for (i = 0;i < m;++i)
-			for (j = 0;j < n;++j) 
-			{
-				p.x = (int)(origin[i][j].x+0.5);
-				p.y = (int)(origin[i][j].y+0.5);
-				glVertex2i(p.x,p.y);
-				test_point(p);
-			}
-		printf("This is  %d end\n",s);
-		glEnd();
-		glFlush();
-		glBegin(GL_POINTS);
-		return;
-	}
-	struct pointd or00[m][n],or01[m][n],or10[m][n],or11[m][n];
-	for (i = 0;i < m;++i)
-		for (j = 0;j < n;++j) tempd[0][0][i][j] = origin[i][j];
-
-
-	for (l = 1;l < n;++l)
-	{
-		for (i = 0;i < m;++i)
-			for (j = 0;j+l < n;++j)
-			{
-				tempd[0][l][i][j].x = (tempd[0][l-1][i][j].x+tempd[0][l-1][i][j+1].x)/2;
-				tempd[0][l][i][j].y = (tempd[0][l-1][i][j].y+tempd[0][l-1][i][j+1].y)/2;
-				if (i == 0 && j == 0) or00[0][l] = tempd[0][l][i][j];
-				if (i == 0 && j+l == n-1) or01[0][j] = tempd[0][l][i][j];
-				if (i == m-1 && j == 0) or10[i][l] = tempd[0][l][i][j];
-				if (i == m-1 && j+l == n-1) or11[i][j] = tempd[0][l][i][j];
-			}
-	}
-
-	for (k = 1;k < m;++k)
-		for (l = 0;l < n;++l)
-		{
-			for (i = 0;i+k < m;++i)
-				for (j = 0;j+l < n;++j)
-				{
-					if (k <m-1)
-					{
-						tempd[k][l][i][j].x = (tempd[k-1][l][i][j].x+tempd[k-1][l][i+1][j].x)/2;
-						tempd[k][l][i][j].y = (tempd[k-1][l][i][j].y+tempd[k-1][l][i+1][j].y)/2;
-					}
-					else
-					{
-						tempd[k][l][i][j].x = (tempd[k][l-1][i][j].x+tempd[k][l-1][i][j+1].x)/2;
-						tempd[k][l][i][j].y = (tempd[k][l-1][i][j].y+tempd[k][l-1][i][j+1].y)/2;
-					}
-					if (i == 0 && j == 0) or00[k][l] = tempd[k][l][i][j];
-					if (i == 0 && j+l == n-1) or01[k][j] = tempd[k][l][i][j];
-					if (i+k == m-1 && j == 0) or10[i][l] = tempd[k][l][i][j];
-					if (i+k == m-1 && j+l == n-1) or11[i][j] = tempd[k][l][i][j];
-				}
-		}
-	recur(or00,depth+1);
-	recur(or01,depth+1);
-	recur(or10,depth+1);
-	recur(or11,depth+1);
-}*/
 struct pointd temp1[MAX_SUR],temp2[MAX_SUR];
 struct point recur(double u,double v)
 {
@@ -226,6 +156,5 @@ void drawsurface()
 		{
 			struct point p = recur(u,v);
 			glVertex2i(p.x,p.y);
-	//		test_point(p);
 		}
 }

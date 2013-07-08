@@ -16,8 +16,8 @@ void zbuffer()
 {
 	readshadow();
 	int i,j,k;
-	for (i = -200;i <= 200;++i)
-		for (j = -200;j <= 200;++j)
+	for (i = -300;i <= 300;++i)
+		for (j = -300;j <= 300;++j)
 		{
 			double z = 1e11;
 			struct point p;

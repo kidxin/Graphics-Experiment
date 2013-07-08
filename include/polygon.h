@@ -24,4 +24,6 @@ extern int in_poly(struct poly *pol,struct point p);
 
 extern void makeline(struct poly *pol);
 
+extern void fillseed(struct point seed);
+
 #endif
