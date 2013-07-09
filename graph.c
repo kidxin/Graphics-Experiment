@@ -7,8 +7,8 @@
 #include <unistd.h>
 
 int choice, flag;
-struct point seedpoint;
-
+struct point mousepoint;
+struct line majorline;
 
 void ChangeSize(int w, int h) 
 {
@@ -38,19 +38,16 @@ void ChangeSize(int w, int h)
 void myDisplay(void)
 {
     struct point center;
-    struct line l;
     struct colour c;
     int r,a,b;
     setcolour();  
 //    glPointSize(1);
 	ChangeSize(600,600);
-	if (choice != 100 && choice != 17) glClear(GL_COLOR_BUFFER_BIT);
+	if (choice < 16) glClear(GL_COLOR_BUFFER_BIT);
     glBegin(GL_POINTS);
 	switch (choice)
 	{
-      	case 0:  break;
-		case 1: l = readline(); c = readcolor(); drawline(l,c);
-       			fclose(fin); choice = 100; break;
+		case 1: flag = 0; choice = 18; break;
        			
         case 2: center = readpoint(); readint(&r); c = readcolor(); drawcircle(center,r,c);
        			fclose(fin); choice = 100; break;
@@ -58,11 +55,9 @@ void myDisplay(void)
         case 3: center = readpoint(); readint(&a); readint(&b); c = readcolor(); drawellipse(center,a,b,c);
        			fclose(fin); choice = 100; break;
        			
-        case 4: readpolygon(&pol); fillpolygon(&pol,white,indigo);
-     			fclose(fin); choice = 100; break;
+        case 4: flag = 0; pol.ver_num = 0; choice = 22; break;
      			
-     	case 5: liang();
-     			fclose(fin); choice = 100; break;
+     	case 5: flag = 0; choice =24; break;
      			
      	case 6: read_clip(&window,&pol_clip); 
      			clipping(&window,&pol_clip);
@@ -71,30 +66,95 @@ void myDisplay(void)
      	case 7: zbuffer();		
      			fclose(fin); choice = 100; break;
      
-        case 9: drawcurve(); 
-				fclose (fin); choice = 100; break;
+        case 9: flag = 0; con_num = 0; choice = 20; break;
        		  
         case 10: drawsurface(); 
 				fclose (fin); choice = 100; break;
 			
 		case 11: readpolygon(&pol); drawpolygon(&pol,white); 
-				fclose(fin); choice = 17; flag = 0; break;
+				fclose(fin); flag = 0; choice = 17; break;
 		
-		case 17: fillseed(seedpoint); break;
-       		  
-       default: break;
+		case 17: if (flag) fillseed(mousepoint); break;
+		
+		case 18: if (flag) 
+					{
+						majorline.p1 = mousepoint;
+					//	test_point(mousepoint);
+						choice = 19;
+					}
+				break;
+				
+		case 19: if (flag == 2)
+					{
+						majorline.p2 = mousepoint; 
+						drawline(majorline,green); 
+						flag = 0;
+						choice = 18;
+					}
+				 break;
+		case 20: if (flag > con_num)
+					{
+						if (flag&1) majorline.p1 = mousepoint;
+						else majorline.p2 = mousepoint;
+						if (con_num) drawline(majorline,yellow);
+						control[con_num] = mousepoint;
+						++con_num;
+					}
+				break;
+				
+		case 21: if (flag == con_num) drawcurve(); break;
+		
+		case 22: if (flag > pol.ver_num)
+					{
+						if (flag&1) majorline.p1 = mousepoint;
+						else majorline.p2 = mousepoint;
+						if (pol.ver_num) drawline(majorline,white);
+						pol.vertex[pol.ver_num] = mousepoint;
+						++pol.ver_num;
+					}
+				 break;
+		
+		case 23: if (flag == pol.ver_num) fillpolygon(&pol,white,indigo); break;
+		
+		case 24: if (flag)
+					{
+						liangx1 = mousepoint.x;
+						liangy1 = mousepoint.y;
+						choice = 25;
+					}
+					break;
+		case 25: if (flag == 2)
+					{
+						liangx2 = mousepoint.x;
+						liangy2 = mousepoint.y;
+						if (liangx1 > liangx2) swap(&liangx1,&liangx2);
+						if (liangy1 > liangy2) swap(&liangy1,&liangy2);
+						drawliangwindow();
+						flag = 0;
+						choice = 26;					
+					}
+					break;
+       	case 26: if (flag)
+       				{
+       					majorline.p1 = mousepoint;
+       					choice = 27;
+       				}
+       				break;
+       	
+       	case 27: if (flag == 2)
+       				{
+       					majorline.p2 = mousepoint;
+       					liang(majorline);
+       					flag = 0;
+       					choice = 26;
+       				}
+       				break;
+       	
+       	
+        default: break;
    	}
     glEnd();
-    glFlush();
- /*   struct point p;
-    int i,j;
-    for (i = -5; i<10; ++i)
-    	for (j =-5; j< 10;++j)
-    	{	
-    		p.x = i; p.y =j;
-    		printf("red--%d %d-----%d\n",i,j,getred(p));
-    	}
- */  		
+    glFlush();	
 }
 
 
@@ -102,14 +162,10 @@ void basicgeometry(GLint option)
 {
 	switch (option)
 	{
-		case 1: fin = fopen("test/line", "r"); choice = 1; break;
+		case 1: choice = 1; break;
 		case 2: fin = fopen("test/circle", "r"); choice = 2; break;
 		case 3: fin = fopen("test/ellipse", "r"); choice = 3; break;
 	}
-	if (!fin) {
-    	perror("File Does Not Exist\n");
-    	return ;
-    }
 	glutPostRedisplay ();
 }
 
@@ -117,13 +173,9 @@ void clip(GLint option)
 {
 	switch (option)
 	{
-		case 1: fin = fopen("test/liang", "r"); choice = 5; break;
+		case 1: choice = 5; break;
 		case 2: fin = fopen("test/clipping", "r"); choice = 6; break;
 	}
-	if (!fin) {
-    	perror("File Does Not Exist\n");
-    	return ;
-    }
 	glutPostRedisplay ();
 }
 
@@ -144,13 +196,9 @@ void curve(GLint option)
 {
 	switch (option)
 	{
-		case 1: fin = fopen("test/control", "r"); choice = 9; break;
+		case 1: choice = 9; break;
 		case 2: fin = fopen("test/surface", "r"); choice = 10; break;
 	}
-	if (!fin) {
-    	perror("File Does Not Exist\n");
-    	return ;
-    }
 	glutPostRedisplay ();
 }
 
@@ -158,7 +206,7 @@ void fillpol(GLint option)
 {
 	switch (option)
 	{
-		case 1: fin = fopen("test/fillpolygon", "r"); choice = 4; break;
+		case 1: choice = 4; break;
 		case 2: fin = fopen("test/seed","r"); choice = 11; break;
 	}
 	glutPostRedisplay ();
@@ -166,7 +214,7 @@ void fillpol(GLint option)
 
 void mainmenu(GLint option)
 {
-	glutPostRedisplay ();
+	return ;
 }
 
 void blank(GLint option)
@@ -175,19 +223,49 @@ void blank(GLint option)
 
 void mousedeal(GLint button, GLint action,GLint xMouse,GLint yMouse)
 {
-	if (button == GLUT_LEFT_BUTTON && action == GLUT_DOWN)
+	mousepoint.x = xMouse - 300; mousepoint.y = 300 -yMouse;
+	if (button == GLUT_RIGHT_BUTTON && action == GLUT_DOWN)
 	{
 		switch (choice)
 		{
-			case 17: seedpoint.x = xMouse - 300; seedpoint.y = 300 -yMouse; break; 
-			
+			case 17:  
+			case 18: 
+			case 19: 
+			case 20: 
+			case 21:
+			case 22: 
+			case 23:
+			case 24:
+			case 25:
+			case 26:
+			case 27: ++flag; break;
 			default: return;
 		}
+		glutPostRedisplay ();
 	}
-	if (choice == 17) 
+}
+
+void keyfun(GLubyte key, GLint xMouse, GLint yMouse)
+{
+	if (key == 13)
 	{
-		if (flag) glutPostRedisplay ();
-		else flag = 1;
+		switch (choice)
+		{	
+			case 20: choice = 21; break;
+			case 22: choice = 23; break;
+			default: return;
+		}
+		glutPostRedisplay ();
+	}
+	else if (key == 27)
+	{
+		if (choice == 100) choice = 0;
+		if (choice > 23) choice = 5;
+		else if (choice > 21) choice = 4;
+		else if (choice > 19) choice = 9;
+		else if (choice > 17) choice = 1;
+		else choice = 0;
+		glutPostRedisplay ();
 	}
 }
 
@@ -238,9 +316,11 @@ int main(int argc, char *argv[])
     	glutAddSubMenu ("Curve", Curve);
     	
     
-    glutAttachMenu (GLUT_RIGHT_BUTTON);
+    glutAttachMenu (GLUT_LEFT_BUTTON);
     
     glutMouseFunc (mousedeal);
+    
+    glutKeyboardFunc (keyfun);
     
     glutMainLoop();
 

@@ -1,9 +1,8 @@
 #include "curve.h"
 #include <unistd.h>
 
-struct point control[MAX_CONTROL];
-struct point con2d[MAX_SUR][MAX_SUR];
-int con_num,m,n,s;
+
+int m,n;
 
 void readcontrol()
 {
@@ -64,15 +63,14 @@ void separate(struct pointd *origin)
 
 void drawcurve()
 {
-	readcontrol();
 	int i;
-	for (i = 1;i < con_num;++i)
+/*	for (i = 1;i < con_num;++i)
 	{
 		struct line l;
 		l.p1 = control[i];
 		l.p2 = control[i-1];
 		drawline(l,yellow);
-	}
+	}*/
 	glColor3f(red.r,red.g,red.b);
 	struct pointd *origin = (struct pointd *)malloc(sizeof(struct pointd)*con_num);
 	for (i = 0;i < con_num;++i)
@@ -151,8 +149,8 @@ void drawsurface()
 	}
 	glColor3f(red.r,red.g,red.b);
 	double u,v;
-	for (u = 0;u <= 1; u+=0.015)
-		for (v = 0;v <= 1; v+=0.015)
+	for (u = 0;u <= 1; u+=0.005)
+		for (v = 0;v <= 1; v+=0.005)
 		{
 			struct point p = recur(u,v);
 			glVertex2i(p.x,p.y);

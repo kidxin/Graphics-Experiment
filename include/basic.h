@@ -6,7 +6,7 @@
 #include <math.h>
 struct point
 {
-    int x,y;
+    int x,y,z;
 };
 
 struct slope

@@ -36,61 +36,54 @@ void range(double t1,double t2,int d)
 	}
 }
 
-void liang()
+void drawliangwindow()
 {
-	int x1,x2,y1,y2,n,i;
 	struct line l;
-	readint(&x1);
-	readint(&x2);
-	readint(&y1);
-	readint(&y2);
-	readint(&n);
-	for (i = 0;i < n;++i)
-	{
+	l.p1.x = liangx1; l.p1.y = liangy1;
+	l.p2.x = liangx1; l.p2.y = liangy2;
+	drawline(l,red);
+	l.p2.x = liangx2; l.p2.y = liangy1;
+	drawline(l,red);
+	l.p1.x = liangx2; l.p1.y = liangy2;
+	drawline(l,red);
+	l.p2.x = liangx1; l.p2.y = liangy2;
+	drawline(l,red);
+}
 
-		l = readline();
-		int dx = l.p2.x - l.p1.x;
-		int dy = l.p2.y - l.p1.y;
-		u1 = 0;
-	 	u2 = 1;
-		range(x1-l.p1.x,x2-l.p1.x,dx);
-		range(y1-l.p1.y,y2-l.p1.y,dy);
-	//	printf("%lf %lf\n",u1,u2 );
-		if (u1 < u2)
+void liang(struct line l)
+{
+	int dx = l.p2.x - l.p1.x;
+	int dy = l.p2.y - l.p1.y;
+	u1 = 0;
+ 	u2 = 1;
+	range(liangx1-l.p1.x,liangx2-l.p1.x,dx);
+	range(liangy1-l.p1.y,liangy2-l.p1.y,dy);
+//	printf("%lf %lf\n",u1,u2 );
+	if (u1 < u2)
+	{
+		struct line lt;
+		lt = l;
+		if (u1 > 0) 
 		{
-			struct line lt;
-			lt = l;
-			if (u1 > 0) 
-			{
-				lt.p2.x = (int)(l.p1.x + u1*dx+0.5);
-				lt.p2.y = (int)(l.p1.x + u2*dx+0.5);
-				drawline(lt,white);
-			}
-			if (u2 < 1)
-			{
-				lt.p2 = l.p2;
-				lt.p1.x = (int)(l.p1.x + u2*dx + 0.5);
-				lt.p1.y = (int)(l.p1.y + u2*dy + 0.5);
-				drawline(lt,white);
-			}
-			lt.p1.x = (int)(l.p1.x + u1*dx + 0.5);
-			lt.p2.x = (int)(l.p1.x + u2*dx + 0.5);
-			lt.p1.y = (int)(l.p1.y + u1*dy + 0.5);
-			lt.p2.y = (int)(l.p1.y + u2*dy + 0.5);
-			drawline(lt,blue);
+			lt.p2.x = (int)(l.p1.x + u1*dx+0.5);
+			lt.p2.y = (int)(l.p1.y + u1*dy+0.5);
+			drawline(lt,white);
 		}
-		else  drawline(l,white);
-		
+		if (u2 < 1)
+		{
+			lt.p2 = l.p2;
+			lt.p1.x = (int)(l.p1.x + u2*dx + 0.5);
+			lt.p1.y = (int)(l.p1.y + u2*dy + 0.5);
+			drawline(lt,white);
+		}
+		lt.p1.x = (int)(l.p1.x + u1*dx + 0.5);
+		lt.p2.x = (int)(l.p1.x + u2*dx + 0.5);
+		lt.p1.y = (int)(l.p1.y + u1*dy + 0.5);
+		lt.p2.y = (int)(l.p1.y + u2*dy + 0.5);
+		drawline(lt,blue);
 	}
-	l.p1.x = x1; l.p1.y = y1;
-	l.p2.x = x1; l.p2.y = y2;
-	drawline(l,red);
-	l.p2.x = x2; l.p2.y = y1;
-	drawline(l,red);
-	l.p1.x = x2; l.p1.y = y2;
-	drawline(l,red);
-	l.p2.x = x1; l.p2.y = y2;
-	drawline(l,red);
+	else  drawline(l,white);
+	drawliangwindow();
 }
 
 
@@ -113,12 +106,10 @@ void clipping(struct poly *window,struct poly *pol)
 		if (interset(pol->edge[i],window->edge[x]))
 		{
 			inter[j].p = intersection(pol->edge[i],window->edge[x]);
-//			test_point(inter[j].p);
 			inter[j].pos = x;
 			inter[j].dis = dis(inter[j].p,pol->vertex[i]);
 			++j;
 		}
-//		printf("%d\n" , j);
 		if (j) qsort(inter,j,sizeof(struct storp),comp_dis);
 		int t=in_poly(window,pol->vertex[i]);
 		tpol.vertex[k]=pol->vertex[i];
@@ -161,9 +152,6 @@ void clipping(struct poly *window,struct poly *pol)
 	makeline(&win);
 	int mark[MAX_INTERSECTION];
 	memset(mark,0,sizeof(mark));
-//	printf("%d\n" , tpol.ver_num ) ;
-//	for (i = 0;i < tpol.ver_num; ++i) printf("%d\n",mark[i]);
-//	printf("---------\n" );
 	while (1)
 	{
 		int flag = 1;
@@ -189,7 +177,6 @@ void clipping(struct poly *window,struct poly *pol)
 			
 			for (j = 0;j < win.ver_num; ++j)
 				if (eq_point(tpol.vertex[i],win.vertex[j])) break;
-//			printf("point 5 ok\n");
 			while (flag_win[j] != 2)
 			{
 				clip.vertex[k] = win.vertex[j];
@@ -207,7 +194,6 @@ void clipping(struct poly *window,struct poly *pol)
 		makeline(&clip);
 		fillpolygon(&clip,black,blue);
 	}
-//	printf("point 1 ok\n");
 	drawpolygon(pol,yellow);
 	drawpolygon(window,red);
 }

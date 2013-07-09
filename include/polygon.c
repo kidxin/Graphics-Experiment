@@ -92,9 +92,10 @@ void fillseed(struct point seed)
 	head->p = seed;
 	struct plist *tail;
 	tail = head;
+	int s = 0;
 	while (head != NULL)
 	{
-		glFlush();
+	//	glFlush();
 		struct point p;
 		p = head->p;
 		++p.x;
@@ -109,15 +110,14 @@ void fillseed(struct point seed)
 		t = head;
 		head = head->next;		
 		free(t);
-		
 	}
 }
 
 void fillpolygon(struct poly *temp, struct colour edge,struct colour inter)
 {
 	int ver_num = temp->ver_num;
+	makeline(temp); 
 	struct line pol[MAX_VERTEX];
-//	sweep.p1.x=-200; sweep.p2.x=200;
 	int t;
 	glColor3f(inter.r,inter.g,inter.b);
 	for (t = 0;t < ver_num; ++t) 

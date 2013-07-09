@@ -6,6 +6,10 @@
 #define MAX_SUR 10
 #define MAX_DEPTH 5
 
+struct point control[MAX_CONTROL];
+struct point con2d[MAX_SUR][MAX_SUR];
+int con_num;
+
 extern void drawcurve();
 
 extern void drawsurface();

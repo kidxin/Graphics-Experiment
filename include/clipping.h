@@ -7,11 +7,14 @@
 
 struct poly window,pol_clip;
 
+int liangx1,liangx2,liangy1,liangy2;
+
 extern void read_clip(struct poly *window,struct poly *pol);
 
 extern void clipping(struct poly *window,struct poly *pol);
 
-extern void liang();
+extern void liang(struct line l);
 
+extern void drawliangwindow();
 
 #endif
